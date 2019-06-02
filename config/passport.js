@@ -12,5 +12,6 @@ module.exports = passport => {
   passport.use(new JwtStrategy(options, (jwt_payload, done) => {
     // This payload includes the items we specified earlier
     console.log(jwt_payload);
+    done();
   }));
 };

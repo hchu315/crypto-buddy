@@ -8,17 +8,19 @@ const keys = require('../../config/keys') //to set up token signing w/ jsonwebto
 // const validText = require('../../validation/valid-text');
 // const validateRegisterInput = require('../../validation/register')
 const validateLoginInput = require('../../validation/login')
+const validateRegisterInput = require('../../validation/register')
+const passport = require('passport');
 
 router.get("/test", (req, res) => res.json({ msg: "this is the users route"}));
 
 // REGISTER ROUTE
 router.post('/register', (req, res) => {
-  // const { errors, isValid } = validateRegisterInput(req.body);
+  // console.log(res)
+  const { errors, isValid } = validateRegisterInput(req.body);
 
-  // if (!isValid) {
-  //   debugger
-  //   return res.status(400).json(errors);
-  // }
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
 
   // check to make sure email has not been used. Then, throw error or create user
   User.findOne({ handle: req.body.handle })
@@ -69,6 +71,8 @@ router.post('/register', (req, res) => {
 router.post('/login', (req, res) => {
   const { errors, isValid } = validateLoginInput(req.body);
 
+  // console.log(isValid)
+
   if (!isValid) {
     return res.status(400).json(errors);
   }
@@ -87,7 +91,11 @@ router.post('/login', (req, res) => {
         .then(isMatch => {
           if (isMatch) {
             // set up the payload for web token signing that's returned to user when signed/logged in
-            const payload = { id: user.id, name: user.handle }
+            const payload = { 
+              id: user.id, 
+              name: user.handle, 
+              email: user.email 
+            }
 
             jwt.sign(
               payload,
@@ -110,4 +118,11 @@ router.post('/login', (req, res) => {
     })
 })
 
+// creating a private auth route with passport & JWTStrategy
+router.get('/current', passport.authenticate('jwt', { session: false }), (req, res) => {
+  res.json({ msg: 'Success' });
+})
+
 module.exports = router;
+
+// Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjZjM2MDM4MjdkNTYwMjU2NTY5MDEzNCIsImlhdCI6MTU1OTQ1Mzc1MiwiZXhwIjoxNTU5NDU3MzUyfQ.PXL - p_q0OYFuzNAb7XSRof6Z - Nt - PrPyvYS - 1Hlu65Y

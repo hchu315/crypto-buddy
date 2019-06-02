@@ -26,7 +26,10 @@ mongoose
   app.use(bodyParser.json());
   
 // set up basic route to render info
-app.get("/", (req, res) => res.send("Hello World boiii"));
+// app.get("/", (req, res) => 
+//   // console.log(res)
+//   res.send("Hello World boiii")
+//  );
 const port = process.env.PORT || 5000; // Heroku hosting requires server to run on process.env.PORT, and we are telling the app to run the server on port 5000 otherwise(locally).
 // tells Express to start a socket to listen for connections on the path. Logs a success msg on console when server is running successfully
 app.listen(port, () => console.log(`Server is running on port ${port}`)); 
@@ -34,7 +37,4 @@ app.listen(port, () => console.log(`Server is running on port ${port}`));
 // tell Express to use newly imported routes from routes folder
 app.use("/api/users", users);
 
-// creating a private auth route with passport & JWTStrategy
-app.get('/current', passport.authenticate('jwt', {session: false}), (req, res) => {
-  res.json({msg: 'Success'});
-})
+
