@@ -1,4 +1,4 @@
-// to create User model with pre-defined schema
+// to create User model with pre-defined schema, similar to rails Schema
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
